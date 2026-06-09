@@ -1,0 +1,7 @@
+# Copy this file to .dev.vars and fill in your values
+# These are used by `wrangler dev` for local development
+
+JWT_SECRET=your-secret-key-min-32-chars-here
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your-supabase-service-role-key
+TMDB_API_KEY=your-tmdb-api-key

@@ -1,0 +1,18 @@
+{
+  "name": "movie-tracker",
+  "version": "1.0.0",
+  "description": "A social film tracking platform — log, rate, and share films with friends.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jose": "^5.2.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.24.0"
+  }
+}
