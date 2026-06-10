@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>movie-tracker — Track every film you watch</title>
+  <meta name="description" content="Build your personal watchlist, follow friends, and see your year in film. The social movie tracking app for cinephiles.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVBAR (logged-in)
+       ============================================================ -->
+  <nav id="navbar" class="navbar hidden">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" id="navLogo" onclick="return navigateClick(event, '/')">
+        movie-tracker<span class="logo-dot">●</span>
+      </a>
+
+      <div class="nav-search" id="navSearch">
+        <input type="text" id="searchInput" placeholder="Search films..." autocomplete="off" aria-label="Search films">
+        <div id="searchDropdown" class="search-dropdown hidden"></div>
+      </div>
+
+      <div class="nav-user" id="navUser">
+        <div class="nav-avatar" id="navAvatar" role="button" aria-haspopup="true">
+          <div class="avatar-initials" id="navAvatarInitials"></div>
+          <img src="" alt="" id="navAvatarImg" class="avatar-sm" style="display:none">
+          <span id="navUsername"></span>
+          <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <div id="userDropdown" class="user-dropdown hidden" role="menu">
+          <a href="/u/" id="ddProfile" onclick="return navigateClick(event, ddProfile.getAttribute('href'))">My Profile</a>
+          <a href="/u//stats" id="ddStats" onclick="return navigateClick(event, ddStats.getAttribute('href'))">Stats</a>
+          <a href="/settings" id="ddSettings" onclick="return navigateClick(event, '/settings')">Settings</a>
+          <hr>
+          <a href="#" id="ddLogout">Log out</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <main id="main">
+
+    <!-- Landing Page -->
+    <section id="page-landing" class="page">
+      <nav class="landing-nav" style="border-bottom:1px solid var(--border); padding: 0 32px; display:flex; align-items:center; justify-content:space-between; height:56px; max-width:100%; box-sizing:border-box;">
+        <a href="/" class="landing-nav-logo">movie-tracker<span class="logo-dot">●</span></a>
+        <div class="landing-nav-actions">
+          <a href="/login" class="btn btn-ghost btn-sm" onclick="return showPage('login')">Log in</a>
+          <a href="/register" class="btn btn-primary btn-sm" onclick="return showPage('register')">Sign up</a>
+        </div>
+      </nav>
+
+      <div class="landing">
+        <div class="landing-hero">
+          <div class="hero-text">
+            <h1 class="hero-title">TRACK EVERY<br><span class="accent">FILM</span><br>YOU WATCH.</h1>
+            <p class="hero-subtitle">Build your watchlist. Follow friends. See your year in film.</p>
+            <div class="hero-cta">
+              <a href="/register" class="btn btn-primary btn-lg" onclick="return showPage('register')">Sign up free →</a>
+              <a href="/login" class="btn btn-secondary btn-lg" onclick="return showPage('login')">Log in</a>
+            </div>
+          </div>
+          <div class="hero-posters" id="heroPosters">
+            <div class="hero-poster" id="heroPoster1"><img src="" alt="" id="heroPosterImg1"></div>
+            <div class="hero-poster" id="heroPoster2"><img src="" alt="" id="heroPosterImg2"></div>
+            <div class="hero-poster" id="heroPoster3"><img src="" alt="" id="heroPosterImg3"></div>
+          </div>
+        </div>
+
+        <div class="landing-preview">
+          <div class="landing-preview-inner">
+            <p class="preview-label">JOIN THE COMMUNITY</p>
+            <div class="preview-cards" id="landingPreview">
+              <div class="preview-card">
+                <div class="preview-card-avatar">A</div>
+                <div class="preview-card-info">
+                  <strong>@arjun</strong>
+                  <span>47 films in 2026</span>
+                </div>
+              </div>
+              <div class="preview-card">
+                <div class="preview-card-avatar">P</div>
+                <div class="preview-card-info">
+                  <strong>@priya</strong>
+                  <span>★ 8.1 avg rating</span>
+                </div>
+              </div>
+              <div class="preview-card">
+                <div class="preview-card-avatar">R</div>
+                <div class="preview-card-info">
+                  <strong>@ravi</strong>
+                  <span>14 day streak</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Login Page -->
+    <section id="page-login" class="page hidden">
+      <div class="auth-card">
+        <a href="/" class="auth-logo" onclick="return showPage('landing')">movie-tracker<span class="logo-dot">●</span></a>
+        <h1 class="auth-title">Log in</h1>
+        <form id="loginForm" class="auth-form">
+          <div class="field">
+            <label for="loginUsername">Username</label>
+            <input type="text" id="loginUsername" required autocomplete="username" placeholder="your_username">
+          </div>
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <div class="pwd-wrapper">
+              <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="••••••••">
+              <button type="button" class="pwd-toggle" onclick="togglePwd('loginPassword', this)" tabindex="-1" aria-label="Show password">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="loginError" class="form-error hidden"></div>
+          <button type="submit" class="btn btn-primary btn-full" id="loginSubmitBtn">Log in →</button>
+        </form>
+        <p class="auth-alt">No account? <a href="/register" onclick="return showPage('register')">Sign up</a></p>
+      </div>
+    </section>
+
+    <!-- Register Page -->
+    <section id="page-register" class="page hidden">
+      <div class="auth-card">
+        <a href="/" class="auth-logo" onclick="return showPage('landing')">movie-tracker<span class="logo-dot">●</span></a>
+        <h1 class="auth-title">Sign up</h1>
+        <form id="registerForm" class="auth-form">
+          <div class="field">
+            <label for="regUsername">Username</label>
+            <input type="text" id="regUsername" required autocomplete="username" minlength="3" placeholder="lowercase, no spaces">
+          </div>
+          <div class="field">
+            <label for="regPassword">Password</label>
+            <div class="pwd-wrapper">
+              <input type="password" id="regPassword" required autocomplete="new-password" minlength="8" placeholder="8+ characters">
+              <button type="button" class="pwd-toggle" onclick="togglePwd('regPassword', this)" tabindex="-1" aria-label="Show password">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="regConfirm">Confirm password</label>
+            <div class="pwd-wrapper">
+              <input type="password" id="regConfirm" required autocomplete="new-password" placeholder="repeat password">
+              <button type="button" class="pwd-toggle" onclick="togglePwd('regConfirm', this)" tabindex="-1" aria-label="Show password">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="registerError" class="form-error hidden"></div>
+          <button type="submit" class="btn btn-primary btn-full" id="registerSubmitBtn">Sign up →</button>
+        </form>
+        <p class="auth-alt">Already have an account? <a href="/login" onclick="return showPage('login')">Log in</a></p>
+      </div>
+    </section>
+
+    <!-- Feed Page -->
+    <section id="page-feed" class="page hidden">
+      <div class="feed-layout">
+        <div class="feed-main">
+          <div class="feed-header">
+            <h2 class="feed-header-title" style="font-family:var(--font-display);font-size:28px;letter-spacing:0.02em;color:var(--text-primary);margin-bottom:var(--space-6);">FEED</h2>
+          </div>
+          <div id="feedList" class="feed-list"></div>
+          <button id="feedLoadMore" class="btn btn-secondary btn-full feed-load hidden" style="margin-top:24px;">Load more</button>
+          <div id="feedEmpty" class="empty-state hidden">
+            <div class="empty-icon">🎬</div>
+            <p>Follow people to see their activity here.</p>
+            <p class="empty-sub">Search for films to start building your watchlist.</p>
+          </div>
+        </div>
+
+        <aside class="feed-sidebar" id="feedSidebar">
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">YOUR YEAR</h3>
+            <div class="year-card" id="sidebarYearCard">
+              <div class="year-count" id="sidebarYearCount">—</div>
+              <div class="year-label" id="sidebarYearLabel">films this year</div>
+              <div class="year-streak-track">
+                <div class="year-streak-bar" id="sidebarStreakBar"></div>
+              </div>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">WHO TO FOLLOW</h3>
+            <div id="whoToFollowList" class="who-to-follow"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Profile Page -->
+    <section id="page-profile" class="page hidden">
+      <div class="profile">
+        <div class="profile-header-wrap">
+          <div class="profile-header-inner" id="profileHeader"></div>
+        </div>
+
+        <div class="profile-top-films" id="profileTopFilms">
+          <div class="section-header">
+            <h3 class="section-title">TOP FILMS</h3>
+            <button id="toggleFavouritesBtn" class="btn btn-ghost btn-sm" onclick="toggleAllFavourites()" style="display:none;">See all favourites ↓</button>
+          </div>
+          <div class="top-films-strip" id="topFilmsStrip"></div>
+          <div id="allFavouritesSection" class="all-favourites hidden">
+            <div class="all-favourites-header" id="allFavsHeader">ALL FAVOURITES</div>
+            <div class="favourites-grid" id="favouritesGrid"></div>
+          </div>
+        </div>
+
+        <div class="profile-tabs" id="profileTabsBar">
+          <button class="tab active" data-tab="films" onclick="switchProfileTab('films')">FILMS</button>
+          <button class="tab" data-tab="stats" onclick="switchProfileTab('stats')">STATS</button>
+        </div>
+
+        <div class="profile-content" id="profileContent">
+          <div id="profileFilms" class="profile-films">
+            <div class="films-grid" id="filmsGrid"></div>
+            <div id="profileFilmsEmpty" class="empty-state hidden">
+              <div class="empty-icon">🎬</div>
+              <p>Nothing logged yet.</p>
+              <p class="empty-sub">Search for a film in the bar above to start.</p>
+            </div>
+          </div>
+
+          <div id="profileStats" class="profile-stats-wrap hidden">
+            <!-- Amber streak line -->
+            <div class="amber-streak-line" style="margin-top:var(--space-6);">
+              <div class="amber-streak-fill" id="statsStreakBar"></div>
+            </div>
+
+            <div class="year-selector" id="statsYearSelector"></div>
+            <div class="stats-cards" id="statsCards"></div>
+
+            <div class="stats-section">
+              <h4 class="stats-chart-title">HEATMAP</h4>
+              <div id="heatmapContainer" class="heatmap-container"></div>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stats-section">
+                <h4 class="stats-chart-title">BY MONTH</h4>
+                <div id="monthChart" class="chart-container"></div>
+              </div>
+              <div class="stats-section">
+                <h4 class="stats-chart-title">BY GENRE</h4>
+                <div id="genreChart" class="chart-container"></div>
+              </div>
+            </div>
+
+            <div class="stats-section">
+              <h4 class="stats-chart-title">BY DECADE</h4>
+              <div id="decadeChart" class="chart-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings Page -->
+    <section id="page-settings" class="page hidden">
+      <div class="settings">
+        <h1 class="page-title">SETTINGS</h1>
+
+        <div class="settings-section">
+          <h3 class="settings-section-title">Profile</h3>
+          <form id="settingsProfileForm">
+            <div class="settings-avatar">
+              <img id="settingsAvatar" src="" alt="" class="avatar-lg">
+              <button type="button" class="btn btn-secondary btn-sm">Change photo</button>
+            </div>
+            <div class="field">
+              <label for="settingsDisplayName">Display Name</label>
+              <input type="text" id="settingsDisplayName" placeholder="Your display name">
+            </div>
+            <div class="field">
+              <label for="settingsBio">Bio</label>
+              <textarea id="settingsBio" maxlength="200" placeholder="A short bio..."></textarea>
+            </div>
+            <div class="field">
+              <label for="settingsQuote">Favourite Quote</label>
+              <input type="text" id="settingsQuote" maxlength="150" placeholder="Your favourite film quote">
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="settings-section">
+          <h3 class="settings-section-title">Favourite Films</h3>
+          <div id="settingsFavourites" class="settings-favourites"></div>
+        </div>
+
+        <div class="settings-section">
+          <h3 class="settings-section-title">Change Password</h3>
+          <form id="settingsPasswordForm">
+            <div class="field">
+              <label for="settingsCurrentPassword">Current password</label>
+              <div class="pwd-wrapper">
+                <input type="password" id="settingsCurrentPassword" placeholder="••••••••">
+                <button type="button" class="pwd-toggle" onclick="togglePwd('settingsCurrentPassword', this)" tabindex="-1">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="settingsNewPassword">New password</label>
+              <div class="pwd-wrapper">
+                <input type="password" id="settingsNewPassword" minlength="8" placeholder="8+ characters">
+                <button type="button" class="pwd-toggle" onclick="togglePwd('settingsNewPassword', this)" tabindex="-1">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="settingsConfirmPassword">Confirm new</label>
+              <div class="pwd-wrapper">
+                <input type="password" id="settingsConfirmPassword" placeholder="repeat new password">
+                <button type="button" class="pwd-toggle" onclick="togglePwd('settingsConfirmPassword', this)" tabindex="-1">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary">Update →</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Followers Page -->
+    <section id="page-followers" class="page hidden">
+      <div class="follow-list-page">
+        <h1 class="page-title" id="followersTitle">Followers</h1>
+        <div id="followersList" class="follow-list"></div>
+      </div>
+    </section>
+
+    <!-- Following Page -->
+    <section id="page-following" class="page hidden">
+      <div class="follow-list-page">
+        <h1 class="page-title" id="followingTitle">Following</h1>
+        <div id="followingList" class="follow-list"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       MODALS
+       ============================================================ -->
+
+  <!-- Log Film Modal -->
+  <div id="logModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Log film">
+    <div class="modal-backdrop" onclick="closeLogModal()"></div>
+    <div class="modal-content modal-lg">
+      <button class="modal-close" onclick="closeLogModal()" aria-label="Close">✕</button>
+      <div id="logModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Film Detail Modal -->
+  <div id="filmDetailModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Film details">
+    <div class="modal-backdrop" onclick="closeFilmDetail()"></div>
+    <div class="modal-content modal-xl">
+      <button class="modal-close" onclick="closeFilmDetail()" aria-label="Close">✕</button>
+      <div id="filmDetailBody"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
